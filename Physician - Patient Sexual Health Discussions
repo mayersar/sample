@@ -1,0 +1,127 @@
+--US Physicians Discussing Sexual Health Data Set: responses and demographics 
+(age, practice setting, gender, patient volume, years in practice) 
+from primary care physicians who were asked 3 questions. More specifically, the 
+% of patients ages 11+ with which they discuss sexual topics, and a rating of their comfort level (1-7) in discussing sexual
+topics with adolescents, adults, seniors. I am uploading this moderately-sized data set, but if I were creating the table..--
+
+CREATE TABLE `SexualHealthDiscussions` (
+    ID INT, 
+    Perc_Patients_Gen_Sexual_Health_Discussed INT,
+    Perc_Patients_STDs_STIs_Discussed INT,
+    Comfort_Rating_SexualHealthDiscussions INT,
+    Years_in_practice INT,
+    Age INT,
+    Practice_Setting varchar(100),
+    PRIMARY KEY (ID)) AS SHD;
+
+--To add/edit values--
+  INSERT INTO `SexualHealthDiscussions` (ID, Perc_Patients_Gen_Sexual_Health_Discussed, 
+  Perc_Patients_STDs_STIs_Discussed, 
+  Comfort_Rating_SexualHealthDiscussions, Years_in_practice, Age, Practice_Setting)
+  VALUES (1, 80, 50, 7, 28, 57, "office-based");
+  INSERT INTO `SexualHealthDiscussions` (ID, Perc_Patients_Gen_Sexual_Health_Discussed, Perc_Patients_STDs_STIs_Discussed, 
+  Comfort_Rating_SexualHealthDiscussions, Years_in_practice, Age, Practice_Setting)
+  VALUES (2, 25, 5, 3, 10, 42, "Academic Hospital");
+    
+   ALTER TABLE `SexualHealthDiscussions`
+   ADD Gender varchar(20);
+   ALTER TABLE `SexualHealthDiscussions`
+   MODIFY COLUMN Gender varchar(50);
+
+  UPDATE `SexualHealthDiscussions` SET Gender = Female WHERE ID = 1;
+  UPDATE `SexualHealthDiscussions` SET Gender = Male WHERE ID = 2;
+
+--Creating a second table (for join purposes). This is an example, I uploaded the moderately-sized data set--
+  CREATE TABLE `PatientVolume` (
+  ID INT, Patient_Volume INT, PRIMARY KEY (ID));
+  
+  INSERT INTO `PatientVolume`(ID, Patient_Volume) VALUES (1, 100);
+  INSERT INTO `PatientVolume`(ID, Patient_Volume) VALUES (2, 250)
+
+--I attempted to perform an inner join and bring all the information together in one table, and then to save the table.--
+CREATE TABLE SHD
+(SELECT *
+    FROM `SexualHealthDiscussions`
+    INNER JOIN  `PatientVolume` ON  `SexualHealthDiscussions`.`ID` =  `PatientVolume`.`ID`);
+
+--The inner join worked, but I could not create an official table with the output. 
+It was based on this online recommendation: 
+https://dba.stackexchange.com/questions/165248/slow-create-table-from-subquery-using-select-inner-join. Where did I go wrong?--
+
+--General data exploration--
+SELECT * from SexualHealthDiscussions WHERE `Practice_Setting` LIKE “%ic%”;
+--SQL output: all columns for physicians in Sexual Health Discussions with office-based and academic hospital 
+as their practice setting.--
+
+SELECT SUM(`Patient_Volume`) FROM PatientVolume HAVING COUNT(`Patient_Volume`) > 1;
+--SQL output: 43110 the sum of all the patient volume estimates for counts that are greater than 1--
+
+SELECT `PatientVolume`.`Patient_Volume`, `SexualHealthDiscussions`.`Gender`, `SexualHealthDiscussions`.`Practice_Setting`, 
+COUNT(  `SexualHealthDiscussions`.`Years_in_Practice` ) AS NumberOfPhysicians
+FROM  `PatientVolume` 
+INNER JOIN  `SexualHealthDiscussions` ON  `PatientVolume`.`ID` =  `SexualHealthDiscussions`.`ID` 
+WHERE  `Gender` =  "Female"
+OR  `Practice_Setting` =  "Community Hospital"
+GROUP BY  `Gender`;
+
+--^the above worked. It gave me two lines, four columns that counted the number of physicians 
+(lines in the table) that were female and the number of physicians that worked in community hospitals. It seemed 
+like the join with the Patient volume table was not really relevant here, same with the group by, but I would like to do something 
+that runs counts for both tables simultaneously, so next...—
+
+SELECT SUM(  `PatientVolume`.`Patient_Volume` ) AS OverallPatientVolume, SUM(  `SexualHealthDiscussions`.`Years_in_Practice` ) 
+AS OverallYearsInPractice
+FROM  `PatientVolume` 
+INNER JOIN  `SexualHealthDiscussions` ON  `PatientVolume`.`ID` =  `SexualHealthDiscussions`.`ID`;
+--This worked well. The results were two sums: one of a complete count of all patients, another of a complete count 
+of all the years in practice total. Finally was able to combine the two tables and use them appropriately. Feeling good!--
+
+
+--I have 3 hypotheses for this project. 1. Physicians with 10+ years in practice will be more comfortable talking about sexual 
+health compared to physicians with 9 or less years in practice. This is anticipated because sexual health can be a difficult topic to 
+broach with patients, and more experience brings increased confidence to those conversations. 2. The physician with the lowest patient 
+volume will have a higher percentage of patients with which they discuss general sexual health, and the physicians with the higher 
+patients volume will have a higher percentage of patients with which they discuss general sexual health. This is anticipated because 
+fewer patients overall may mean the physicians have more time to spend with each individual and discuss sexual topics. 
+3. Younger physicians will have a higher percentage of patients with which they discuss STDs/STIs. This is anticipated because of the 
+stigma around sexual health, particularly sexually transmitted diseases, is less pronounced in younger individuals. It is possible that 
+younger physicians will be more adamant about having their conversations with all of their patients.—
+
+--Hypothesis 1: Larger # Years in Practice = Increased Comfort With Sexual Topics--
+SELECT AVG(`Comfort_Rating_SexualHealthDiscussions`) FROM SexualHealthDiscussions WHERE `Years_in_practice` >= 10;
+--SQL output: Physicians with 10 or more years in practice rate their comfort level in speaking about sex to 
+patients about a 6.02 (out of 7)--
+
+SELECR AVG(`Comfort_Rating_SexualHealthDiscussions`) FROM SexualHealthDiscussions WHERE `Years_in_practice` < 10;
+--SQL output: Physicians with under 10 years in practice rate their comfort level in speaking about sex to patients about a 5.67 
+(out of 7). Not sure if that is a statistically significant difference, but my instincts were correct!--
+
+--Hypothesis 2: Lower Patient Volumes = Sexual Health Discussed with More Patients—
+SELECT MIN(Patient_Volumes), ID FROM Patient_Volume;
+SELECT MAX(Patient_Volumes), ID FROM Patient_Volume;
+--SQL output: minimum value is 4, maximum value is 7650. Quite a large variation! Weirdly, the output lists the user ID as 1 for both. 
+I was hoping this query would give me a specific user ID to use when following up with information on sexual health discussions for the 
+next part of this problem. I tried things like this: SELECT ` Perc_Patients_Gen_Sexual_Health_Discussed ` 
+FROM SexualHealthDiscussions 
+WHERE `PatientVolume`.`Patient_Volume` = 4,
+INNER JOIN  `SexualHealthDiscussions` ON  `PatientVolume`.`ID` =  `SexualHealthDiscussions`.`ID`; but they did not work and I 
+ended up just manually looking up the IDs in the data set that were associated with the min/max and running the next query listed--
+
+SELECT Perc_Patients_Gen_Sexual_Health_Discussed FROM SexualHealthDiscussions WHERE ID = 117; --for MIN value, output was 25%--
+SELECT Perc_Patients_Gen_Sexual_Health_Discussed FROM SexualHealthDiscussions WHERE ID = 113; --for MAX value, output was 100%--
+--Obviously, I was wrong here, as the person that sees the fewest number of patients speaks to only 25% of them about 
+sexual health, and the one that sees the most patients (a suspicious amount, really) speaks to every single one of them about 
+sexual health. Speaks to the necessity of picking a large sample size over a biased, convenient one! These two values really 
+don’t mean anything in the context of larger trends.--
+
+--Hypothesis 3: Younger Physicians = STDs/STIs Discussed with More Patients —
+Select AVG(`Perc_Patients_STDs_STIs_Discussed`) FROM SexualHealthDiscussions WHERE `Age` >= 45;
+--SQL output: On average, physicians age 45 and older discuss STDs/STIs with 38% of their patients.--
+Select AVG(`Perc_Patients_STDs_STIs_Discussed`) FROM SexualHealthDiscussions WHERE `Age` < 44;
+--SQL output: On average, physicians age 44 and younger discuss STDs/STIs with 40% of their patients. 
+Again my instincts were correct, but obviously more testing needs to be done. --
+
+--Overall, this project was fun because it allowed me to start to flush out some aspects of writing sql code, 
+as well as helped me to recognize new pieces to work on. I was able to confirm hypotheses 1 & 3, but only by a small margin. 
+More research needs to be done into this topic in order to ensure all patients receive education on these important topics 
+at their annual medical appointments!--
