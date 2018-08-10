@@ -20,3 +20,8 @@ def word_count(str):
     return counts
 
 print( word_count('the quick brown fox jumps over the lazy dog.'))
+from collections import Counter
+
+def word_counting(str):
+return Counter(str.split())
+print(word_counting('the quick brown fox jumps over the lazy dog.'))
