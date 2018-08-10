@@ -1,0 +1,111 @@
+Last login: Thu Jul 26 13:55:21 on ttys001
+InCrowds-MacBook-Air-6:~ sarahmayer$ pwd
+/Users/sarahmayer
+InCrowds-MacBook-Air-6:~ sarahmayer$ ls
+Applications	Documents	Library		Music		Public
+Desktop		Downloads	Movies		Pictures	anaconda3
+InCrowds-MacBook-Air-6:~ sarahmayer$ 
+InCrowds-MacBook-Air-6:~ sarahmayer$ ~cd Desktop/
+-bash: ~cd: command not found
+InCrowds-MacBook-Air-6:~ sarahmayer$ ~cd Desktop/ $ls
+-bash: ~cd: command not found
+InCrowds-MacBook-Air-6:~ sarahmayer$ Desktop $ls
+-bash: Desktop: command not found
+InCrowds-MacBook-Air-6:~ sarahmayer$ pwd
+/Users/sarahmayer
+InCrowds-MacBook-Air-6:~ sarahmayer$ clear
+
+
+
+
+
+
+
+
+
+
+
+InCrowds-MacBook-Air-6:~ sarahmayer$ ls -la
+total 72
+drwxr-xr-x+  29 sarahmayer  staff    986 Jul 22 12:10 .
+drwxr-xr-x    7 root        admin    238 Sep  8  2016 ..
+-r--------    1 sarahmayer  staff      7 Sep  8  2016 .CFUserTextEncoding
+-rw-r--r--@   1 sarahmayer  staff  12292 Aug  9 19:23 .DS_Store
+drwx------  574 sarahmayer  staff  19516 Jul 26 19:06 .Trash
+drwxr-xr-x    3 sarahmayer  staff    102 Jul 19 18:57 .anaconda
+drwxr-xr-x   14 sarahmayer  staff    476 Jul 10 18:59 .atom
+-rw-r--r--    1 sarahmayer  staff    300 Jul 26 16:36 .bash_history
+-rw-r--r--    1 sarahmayer  staff    258 Jul 12 22:24 .bash_profile
+-rw-r--r--    1 sarahmayer  staff    168 Jul 12 20:40 .bash_profile-anaconda3.bak
+drwxr-xr-x   18 sarahmayer  staff    612 Aug  9 19:20 .bash_sessions
+drwxr-xr-x    2 sarahmayer  staff     68 Jul 26 16:34 .conda
+-rw-r--r--    1 sarahmayer  staff     40 Jul 26 13:45 .condarc
+drwx------    3 sarahmayer  staff    102 Sep 20  2016 .cups
+drwxr-xr-x   11 sarahmayer  staff    374 Jul 12 20:32 .dbvis
+drwxr-xr-x    5 sarahmayer  staff    170 Jul 19 18:58 .ipython
+drwxr-xr-x    3 sarahmayer  staff    102 Jul 22 12:10 .jupyter
+drwxr-xr-x    4 sarahmayer  staff    136 Jul 24 18:53 .matplotlib
+drwxr-xr-x    4 sarahmayer  staff    136 Jul 12 20:32 .oracle_jre_usage
+drwx------    3 sarahmayer  staff    102 Oct 11  2017 Applications
+drwx------+  53 sarahmayer  staff   1802 Aug  8 15:20 Desktop
+drwx------+   9 sarahmayer  staff    306 Jul 26 19:09 Documents
+drwx------+ 574 sarahmayer  staff  19516 Aug  8 15:28 Downloads
+drwx------@  53 sarahmayer  staff   1802 Jul 26 19:09 Library
+drwx------+   5 sarahmayer  staff    170 Jun 22 19:42 Movies
+drwx------+   6 sarahmayer  staff    204 Aug  8  2017 Music
+drwx------+   8 sarahmayer  staff    272 Jun 22 19:41 Pictures
+drwxr-xr-x+   5 sarahmayer  staff    170 Sep  8  2016 Public
+drwxr-xr-x   24 sarahmayer  staff    816 Jul 26 16:34 anaconda3
+InCrowds-MacBook-Air-6:~ sarahmayer$ cd Library
+InCrowds-MacBook-Air-6:Library sarahmayer$ ls
+Accounts		Fonts Disabled		Printers
+Application Scripts	Google			PubSub
+Application Support	Group Containers	Receipts
+Assistants		IdentityServices	Safari
+Audio			Input Methods		Saved Application State
+Caches			Internet Plug-Ins	Screen Savers
+Calendars		Jupyter			Services
+ColorPickers		Keyboard Layouts	Sounds
+Colors			Keychains		Spelling
+Compositions		LanguageModeling	Suggestions
+Containers		LaunchAgents		SyncedPreferences
+Cookies			Logs			Tableau
+CoreData		Mail			Voices
+Dictionaries		Messages		WebKit
+Favorites		Metadata		com.apple.nsurlsessiond
+FontCollections		PreferencePanes		iMovie
+Fonts			Preferences
+InCrowds-MacBook-Air-6:Library sarahmayer$ pwd
+/Users/sarahmayer/Library
+InCrowds-MacBook-Air-6:Library sarahmayer$ cd ..
+InCrowds-MacBook-Air-6:~ sarahmayer$ ls
+Applications	Documents	Library		Music		Public
+Desktop		Downloads	Movies		Pictures	anaconda3
+InCrowds-MacBook-Air-6:~ sarahmayer$ touch test_file
+InCrowds-MacBook-Air-6:~ sarahmayer$ ls
+Applications	Downloads	Music		anaconda3
+Desktop		Library		Pictures	test_file
+Documents	Movies		Public
+InCrowds-MacBook-Air-6:~ sarahmayer$ touch new_folder
+InCrowds-MacBook-Air-6:~ sarahmayer$ ls
+Applications	Downloads	Music		anaconda3
+Desktop		Library		Pictures	new_folder
+Documents	Movies		Public		test_file
+InCrowds-MacBook-Air-6:~ sarahmayer$ cp test_file new_folder
+InCrowds-MacBook-Air-6:~ sarahmayer$ cd new_folder
+-bash: cd: new_folder: Not a directory
+InCrowds-MacBook-Air-6:~ sarahmayer$ cp test_file new_folder
+InCrowds-MacBook-Air-6:~ sarahmayer$ cd new_folder
+-bash: cd: new_folder: Not a directory
+InCrowds-MacBook-Air-6:~ sarahmayer$ cp test_file new_folder
+InCrowds-MacBook-Air-6:~ sarahmayer$ ls
+Applications	Downloads	Music		anaconda3
+Desktop		Library		Pictures	new_folder
+Documents	Movies		Public		test_file
+InCrowds-MacBook-Air-6:~ sarahmayer$ rm test_file
+InCrowds-MacBook-Air-6:~ sarahmayer$ ls
+Applications	Downloads	Music		anaconda3
+Desktop		Library		Pictures	new_folder
+Documents	Movies		Public
+InCrowds-MacBook-Air-6:~ sarahmayer$ rm new_folder
+InCrowds-MacBook-Air-6:~ sarahmayer$ 
